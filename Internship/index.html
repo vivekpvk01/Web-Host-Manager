@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebHostManager</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-5">WebHostManager</h1>
+
+        <!-- Registration Section -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">Register</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="register-username" class="form-label">Username</label>
+                    <input type="text" id="register-username" class="form-control" placeholder="Enter username">
+                </div>
+                <div class="mb-3">
+                    <label for="register-password" class="form-label">Password</label>
+                    <input type="password" id="register-password" class="form-control" placeholder="Enter password">
+                </div>
+                <button class="btn btn-primary w-100" onclick="registerUser()">Register</button>
+            </div>
+        </div>
+
+        <!-- Login Section -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">Login</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="login-username" class="form-label">Username</label>
+                    <input type="text" id="login-username" class="form-control" placeholder="Enter username">
+                </div>
+                <div class="mb-3">
+                    <label for="login-password" class="form-label">Password</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="Enter password">
+                </div>
+                <button class="btn btn-primary w-100" onclick="loginUser()">Login</button>
+            </div>
+        </div>
+
+        <!-- Add Client Section -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">Add Client</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="client-name" class="form-label">Client Name</label>
+                    <input type="text" id="client-name" class="form-control" placeholder="Enter client name">
+                </div>
+                <div class="mb-3">
+                    <label for="client-website" class="form-label">Website URL</label>
+                    <input type="text" id="client-website" class="form-control" placeholder="Enter website URL">
+                </div>
+                <div class="mb-3">
+                    <label for="client-credentials" class="form-label">Login Credentials</label>
+                    <input type="text" id="client-credentials" class="form-control" placeholder="Enter login credentials">
+                </div>
+                <div class="mb-3">
+                    <label for="client-expiry" class="form-label">Expiry Date</label>
+                    <input type="date" id="client-expiry" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="client-renewal" class="form-label">Renewal Charges</label>
+                    <input type="number" id="client-renewal" class="form-control" placeholder="Enter renewal charges">
+                </div>
+                <button class="btn btn-primary w-100" onclick="addClient()">Add Client</button>
+            </div>
+        </div>
+
+        <!-- View Clients Section -->
+        <div class="card">
+            <div class="card-header bg-primary text-white">Clients</div>
+            <div class="card-body">
+                <button class="btn btn-primary w-100 mb-3" onclick="fetchClients()">Fetch Clients</button>
+                <pre id="clients-list" class="p-3 bg-light border rounded"></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        async function registerUser() {
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const response = await fetch('http://127.0.0.1:5000/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const result = await response.json();
+            alert(result.message || result.error);
+        }
+
+        async function loginUser() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            const response = await fetch('http://127.0.0.1:5000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const result = await response.json();
+            alert(result.message || result.error);
+        }
+
+        async function addClient() {
+            const name = document.getElementById('client-name').value;
+            const website_url = document.getElementById('client-website').value;
+            const login_credentials = document.getElementById('client-credentials').value;
+            const expiry_date = document.getElementById('client-expiry').value;
+            const renewal_charges = document.getElementById('client-renewal').value;
+            const response = await fetch('http://127.0.0.1:5000/clients', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, website_url, login_credentials, expiry_date, renewal_charges })
+            });
+            const result = await response.json();
+            alert(result.message || result.error);
+        }
+
+        async function fetchClients() {
+            const response = await fetch('http://127.0.0.1:5000/clients');
+            const clients = await response.json();
+            document.getElementById('clients-list').innerHTML = JSON.stringify(clients, null, 2);
+        }
+    </script>
+</body>
+</html>
